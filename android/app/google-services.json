@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "840088402412",
+    "project_id": "focusfortress-339a9",
+    "storage_bucket": "focusfortress-339a9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:840088402412:android:1162df215ee00a5758e8c9",
+        "android_client_info": {
+          "package_name": "com.focusfortress.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDfK918Ke41-yMGZdNLIpPVftJgFT3xPoE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
