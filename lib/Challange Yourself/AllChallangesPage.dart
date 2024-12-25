@@ -52,6 +52,7 @@ class _AllchallangesPageState extends State<AllchallangesPage> {
           ),
         ),
       ),
+
     );
   }
 }
