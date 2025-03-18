@@ -1,5 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import '../homepage.dart';
 
 // Login Page
 class LoginPage extends StatefulWidget {
@@ -29,7 +32,10 @@ class _LoginPageState extends State<LoginPage> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/homepage');
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyHomePage(userId: _auth.currentUser!.uid,)),
+                  );
                 },
                 child: Text("OK"),
               )
@@ -167,6 +173,7 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final _firestore = FirebaseFirestore.instance; // Firestore instance
 
   void _registerUser() async {
     if (_formKey.currentState!.validate()) {
@@ -186,27 +193,40 @@ class _SignupPageState extends State<SignupPage> {
         );
         return;
       }
+
       try {
-        await _auth.createUserWithEmailAndPassword(
+        // Register the user with Firebase Authentication
+        UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
         );
-        // Show success message
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text("Registration Successful"),
-            content: Text("Your account has been created!"),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/');
-                },
-                child: Text("OK"),
-              )
-            ],
-          ),
-        );
+
+        // Ensure user is successfully registered before proceeding
+        if (userCredential.user != null) {
+          // Add the user data to Firestore
+          await _firestore.collection('Users').doc(userCredential.user!.uid).set({
+            'email': emailController.text.trim(),
+            'uid': userCredential.user!.uid,
+            'created_at': FieldValue.serverTimestamp(),
+          });
+
+          // Success dialog
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text("Registration Successful"),
+              content: Text("Your account has been created successfully!"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context, '/'); // Navigate to login or home
+                  },
+                  child: Text("OK"),
+                ),
+              ],
+            ),
+          );
+        }
       } catch (e) {
         // Show error message
         showDialog(
