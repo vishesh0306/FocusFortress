@@ -1,10 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'Challange Yourself/CreateChallangePage.dart';
-import 'Challange Yourself/ProgressPage.dart';
+import 'Challange Yourself/challengeListingPage.dart';
+import 'Daily Challenges/ToDOPage.dart';
+import 'Shared_Preference.dart';
+import 'auth/AuthService.dart';
 
 class MyHomePage extends StatefulWidget {
   final userId;
@@ -22,6 +23,22 @@ class _MyHomePageState extends State<MyHomePage> {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text('DashBoard'),
           automaticallyImplyLeading: false,
+          actions: [
+            IconButton(
+                onPressed: () async {
+                  try {
+                    AuthService.logout();
+                    await SharedPrefsHelper.logout();
+                    Navigator.pushReplacementNamed(context, '/login');
+                  }
+                  catch(e){
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Logout failed. Please try again.')),
+                    );
+                  }
+                },
+                icon: Icon(Icons.logout,))
+          ],
         ),
       body: SingleChildScrollView(
         child: Padding(
@@ -29,60 +46,96 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Example: Some other widgets on the page
-              Text(
-                'Welcome to Challenges!',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 10),
-              Text('Track your progress by choosing a challenge below.'),
-              SizedBox(height: 20),
-              // StreamBuilder embedded in a Column
-              StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection('Users')
-                    .doc(FirebaseAuth.instance.currentUser?.uid)
-                    .collection('Challenges')
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return Text('No challenges found.');
-                  }
 
-                  List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
-
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: documents.map((doc) {
-                      String name = doc['name'];
-
-                      return ListTile(
-                        title: Text(name),
-                        trailing: Icon(Icons.arrow_forward),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ChallengeProofPage(
-                                id: doc.id,
-                                name: name,
-                                // You can pass more fields like duration and motive
-                                // duration: doc['duration'],
-                                // motive: doc['motive'],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    }).toList(),
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ChallengeList(userId: widget.userId,)),
                   );
                 },
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 100),
+                  decoration: BoxDecoration(
+                    color: Colors.lightBlueAccent[100],
+                   borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Text(
+                    "Challenge Yourself",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+                ),
               ),
 
               SizedBox(height: 20),
+
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => TodoPage(userId: widget.userId,)),
+                  );
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 100),
+                  decoration: BoxDecoration(
+                    color: Colors.lightGreenAccent[100],
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Text(
+                    "Set Daily Targets",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 20),
+
+              GestureDetector(
+                onTap: (){
+                  // Navigator.pushReplacement(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => ChallengeList(userId: widget.userId,)),
+                  // );
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 100),
+                  decoration: BoxDecoration(
+                    color: Colors.pinkAccent[100],
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Text(
+                    "Set ToDo's with deadlines",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 20),
+
+              GestureDetector(
+                onTap: (){
+                  // Navigator.pushReplacement(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => ChallengeList(userId: widget.userId,)),
+                  // );
+                },
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 100),
+                  decoration: BoxDecoration(
+                    color: Colors.yellowAccent[100],
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: Text(
+                    "Check Progress",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  ),
+                ),
+              ),
 
 
             ],

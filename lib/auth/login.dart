@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../Shared_Preference.dart';
 import '../homepage.dart';
 
 // Login Page
@@ -23,6 +24,9 @@ class _LoginPageState extends State<LoginPage> {
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
         );
+
+        await SharedPrefsHelper.saveUserLogin(_auth.currentUser!.uid);
+
         // Show success message
         showDialog(
           context: context,
@@ -31,10 +35,14 @@ class _LoginPageState extends State<LoginPage> {
             content: Text("Welcome back!"),
             actions: [
               TextButton(
+
                 onPressed: () {
-                  Navigator.pushReplacement(
+                  Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => MyHomePage(userId: _auth.currentUser!.uid,)),
+                    MaterialPageRoute(
+                      builder: (context) => MyHomePage(userId: _auth.currentUser!.uid),
+                    ),
+                        (Route<dynamic> route) => false, // removes all previous routes
                   );
                 },
                 child: Text("OK"),
