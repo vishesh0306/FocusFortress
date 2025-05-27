@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../Provider/ToDoProvider.dart';
-
 
 class TodoPage extends StatelessWidget {
   final String userId;
@@ -30,9 +28,9 @@ class TodoPage extends StatelessWidget {
               ),
               SizedBox(height: 10),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (controller.text.isNotEmpty) {
-                    Provider.of<TodoProvider>(context, listen: false)
+                    await Provider.of<TodoProvider>(context, listen: false)
                         .addTodo(controller.text);
                     Navigator.pop(context);
                   }
@@ -48,11 +46,13 @@ class TodoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final todoProvider = Provider.of<TodoProvider>(context, listen: false);
+    todoProvider.setUserId(userId); // Setup Firestore path and load data
+
     return Scaffold(
       appBar: AppBar(title: Text("Dynamic TODO List")),
       body: Consumer<TodoProvider>(
         builder: (context, todoProvider, child) {
-
           if (todoProvider.todos.isEmpty) {
             return Center(
               child: Text(

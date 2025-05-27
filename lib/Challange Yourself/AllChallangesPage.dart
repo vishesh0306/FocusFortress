@@ -7,7 +7,8 @@ import 'package:provider/provider.dart';
 import 'CreateChallangePage.dart';
 
 class AllchallangesPage extends StatefulWidget {
-  const AllchallangesPage({Key? key}) : super(key: key);
+  final String userId;
+  AllchallangesPage({super.key, required this.userId});
 
   @override
   State<AllchallangesPage> createState() => _AllchallangesPageState();
@@ -43,7 +44,7 @@ class _AllchallangesPageState extends State<AllchallangesPage> {
               SizedBox(height: 15,),
 
               ElevatedButton(onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context)=> CreateChallengePage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=> CreateChallengePage(userId: widget.userId,)));
               },
 
               child: Text("Start A New Challange"))

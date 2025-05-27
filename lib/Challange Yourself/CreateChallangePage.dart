@@ -1,14 +1,25 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
+
 
 class CreateChallengePage extends StatefulWidget {
+
+  final String userId;
+  CreateChallengePage({super.key, required this.userId});
+
   @override
   _CreateChallengeScreenState createState() => _CreateChallengeScreenState();
 }
 
 class _CreateChallengeScreenState extends State<CreateChallengePage> {
   final _formKey = GlobalKey<FormState>();
+
 
   // Controllers to capture input
   final TextEditingController _nameController = TextEditingController();

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:focusflow/auth/login.dart';
 import 'package:focusflow/homepage.dart'; // Ensure you import your homepage
 import 'package:provider/provider.dart';
@@ -10,6 +11,7 @@ import 'Provider/CountProvider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load();
   await Firebase.initializeApp();
 
   // Get user data (login status and userId)

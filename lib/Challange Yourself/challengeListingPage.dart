@@ -69,6 +69,7 @@ class _MyHomePageState extends State<ChallengeList> {
                               builder: (context) => ChallengeProofPage(
                                 id: doc.id,
                                 name: name,
+                                userId: widget.userId,
                                 // You can pass more fields like duration and motive
                                 // duration: doc['duration'],
                                 // motive: doc['motive'],
@@ -93,7 +94,7 @@ class _MyHomePageState extends State<ChallengeList> {
 
 
       floatingActionButton: FloatingActionButton(
-          onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context)=> CreateChallengePage()));
+          onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context)=> CreateChallengePage(userId: widget.userId,)));
           },
           child: Icon(Icons.add)
       ),

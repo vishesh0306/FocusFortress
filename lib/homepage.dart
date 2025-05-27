@@ -146,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
       floatingActionButton: FloatingActionButton(
-          onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context)=> CreateChallengePage()));
+          onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context)=> CreateChallengePage(userId: widget.userId,)));
           },
           child: Icon(Icons.add)
       ),
