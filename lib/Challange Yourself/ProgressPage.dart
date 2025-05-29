@@ -360,81 +360,129 @@ class _ChallengeProofPageState extends State<ChallengeProofPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Challenge time')),
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text('Challenge Time', style: TextStyle(color: Colors.white),),
+        backgroundColor: Colors.deepPurple,
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Displaying the Challenge Information
-              // Text(
-              //   'Challenge: ${widget.name}',
-              //   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              // ),
-              SizedBox(height: 20),
-        
-              // StreamBuilder to fetch challenge details from Firebase
               StreamBuilder<DocumentSnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('Users')
                     .doc(FirebaseAuth.instance.currentUser!.uid)
                     .collection('Challenges')
-                    .doc(widget.id) // Challenge ID passed to widget
+                    .doc(widget.id)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
                   }
-        
+
                   if (!snapshot.hasData || !snapshot.data!.exists) {
                     return Text('No challenge details available.');
                   }
-        
+
                   var challengeData = snapshot.data!.data() as Map<String, dynamic>;
-        
+
                   String name = challengeData['name'] ?? 'N/A';
                   String motive = challengeData['motive'] ?? 'N/A';
                   int duration = challengeData['duration'] ?? 0;
                   String status = challengeData['status'] ?? 'N/A';
                   int completedDays = challengeData['completedDays'] ?? 0;
-        
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Challenge: $name',
-                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 10),
-                      Row(
+
+                  Widget infoRow(IconData icon, String label, String value) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Row(
                         children: [
-                          Text('Motive:  ', style: TextStyle(fontWeight: FontWeight.bold),),
-                          Text('$motive'),
+                          Icon(icon, color: Colors.deepPurple),
+                          SizedBox(width: 12),
+                          Flexible(  // <-- wrap RichText in Flexible
+                            child: RichText(
+                              text: TextSpan(
+                                style: TextStyle(fontSize: 16, color: Colors.black87),
+                                children: [
+                                  TextSpan(
+                                    text: '$label: ',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.deepPurple,
+                                      letterSpacing: 0.8,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: value,
+                                    style: TextStyle(fontWeight: FontWeight.normal),
+                                  ),
+                                ],
+                              ),
+                              overflow: TextOverflow.ellipsis, // Optional: to truncate overflowed text
+                              maxLines: 2, // Optional: adjust as needed
+                            ),
+                          ),
                         ],
                       ),
-                      Row(
+
+                    );
+                  }
+
+                  return Card(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    elevation: 5,
+                    margin: EdgeInsets.only(bottom: 20),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 18),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Duration:  ', style: TextStyle(fontWeight: FontWeight.bold),),
-                          Text('$duration days'),
+                          Row(
+                            children: [
+                              Icon(Icons.emoji_events, color: Colors.deepPurple, size: 28),
+                              SizedBox(width: 8),
+                              Text(
+                                'CHALLENGE DETAILS',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.deepPurple,
+                                  letterSpacing: 1.2,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Divider(color: Colors.deepPurple.shade100, thickness: 1.5),
+                          infoRow(Icons.flag, 'Challenge', name),
+                          Divider(color: Colors.grey.shade300),
+                          infoRow(Icons.mood, 'Motive', motive),
+                          Divider(color: Colors.grey.shade300),
+                          infoRow(Icons.timer, 'Duration', '$duration days'),
+                          Divider(color: Colors.grey.shade300),
+                          infoRow(Icons.info, 'Status', status),
+                          Divider(color: Colors.grey.shade300),
+                          infoRow(Icons.check_circle, 'Completed Days', '$completedDays'),
                         ],
                       ),
-                      Row(
-                        children: [
-                          Text('Status:  ', style: TextStyle(fontWeight: FontWeight.bold),),
-                          Text('$status'),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text('Completed Days:  ', style: TextStyle(fontWeight: FontWeight.bold),),
-                          Text('$completedDays'),
-                        ],
-                      ),
-                      SizedBox(height: 20),
-                    ],
+                    ),
                   );
                 },
               ),
+
+
+              Text(
+                '📎 Upload Your Proof',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.deepPurple),
+              ),
+              SizedBox(height: 10),
 
               DropdownButtonFormField<String>(
                 value: selectedOption,
@@ -442,7 +490,11 @@ class _ChallengeProofPageState extends State<ChallengeProofPage> {
                   DropdownMenuItem(value: "link", child: Text("Share a Link")),
                   DropdownMenuItem(value: "file", child: Text("Upload a File")),
                 ],
-                hint: Text("Select an Option"),
+                decoration: InputDecoration(
+                  labelText: 'Select an Option',
+                  border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                ),
                 onChanged: (value) {
                   setState(() {
                     selectedOption = value;
@@ -451,80 +503,108 @@ class _ChallengeProofPageState extends State<ChallengeProofPage> {
               ),
               SizedBox(height: 20),
 
-              // Show input field for link
               if (selectedOption == "link")
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-
                     TextField(
                       controller: _proofController,
                       decoration: InputDecoration(
-                        labelText: 'Enter Proof Text',
-                        border: OutlineInputBorder(),
+                        labelText: 'Enter Link',
+                        prefixIcon: Icon(Icons.link),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10)),
                       ),
                     ),
-
                     SizedBox(height: 10),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        final link = _proofController.text.trim();
-                        if (link.isNotEmpty) {
-                          // _addProof(link);
-                          _addProof();
-                        }
-                      },
-                      child: Text("Submit Link"),
+                    Align(
+                      alignment: Alignment.bottomLeft,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          final link = _proofController.text.trim();
+                          if (link.isNotEmpty) {
+                            _addProof();
+                          }
+                        },
+                        icon: Icon(Icons.send, color: Colors.white,),
+                        label: Text("Submit Link", style: TextStyle(color: Colors.white)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.deepPurple,
+                          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
 
-              // Show upload button for file
               if (selectedOption == "file")
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     (selectedFile?.count ?? 0) > 0
-                        ? Text("File Selected")
-                        : Text(""),
+                        ? Text("✅ File Selected")
+                        : SizedBox.shrink(),
                     ElevatedButton.icon(
                       onPressed: _pickAndUploadFile,
-                      icon: Icon(Icons.upload_file),
-                      label: Text("Pick and Upload File"),
+                      icon: Icon(Icons.upload_file, color: Colors.white,),
+                      label: Text("Pick and Upload File", style: TextStyle(color: Colors.white),),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepPurple,
+                        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
                     ),
                   ],
                 ),
-        
-              // Proof Text Field
-              // TextField(
-              //   controller: _proofController,
-              //   decoration: InputDecoration(
-              //     labelText: 'Enter Proof Text',
-              //     border: OutlineInputBorder(),
-              //   ),
-              // ),
 
-              SizedBox(height: 20),
-        
-              // Submit Button with Disabled State
-              ElevatedButton(
-                onPressed: isButtonDisabled ? null : _addProof, // Disables the button
-                child: Text(isButtonDisabled ? 'Challenge Completed' : 'Submit Proof'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: isButtonDisabled ? Colors.grey : Colors.blue, // Disable appearance
+              SizedBox(height: 30),
+
+              Center(
+                child: ElevatedButton.icon(
+                  onPressed: isButtonDisabled ? null : _addProof,
+                  icon: Icon(Icons.check_circle, color: Colors.white,),
+                  label: Text(isButtonDisabled
+                      ? 'Challenge Completed'
+                      : 'Submit Proof', style: TextStyle(color: Colors.white),),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                    isButtonDisabled ? Colors.grey : Colors.green,
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    textStyle:
+                    TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
+
               SizedBox(height: 30),
-        
-              // Button to Navigate to Progress Page
-              ElevatedButton(
-                onPressed: _goToProgressPage,
-                child: Text('Go to Progress Page'),
+
+              Center(
+                child: ElevatedButton.icon(
+                  onPressed: _goToProgressPage,
+                  icon: Icon(Icons.bar_chart, color: Colors.white,),
+                  label: Text('Go to Progress Page', style: TextStyle(color: Colors.white)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                ),
               ),
             ],
           ),
         ),
       ),
     );
+
   }
 }
 

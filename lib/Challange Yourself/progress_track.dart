@@ -1,6 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'DropBoxPreviewPage.dart';
+
 
 class ChallengeTrackerPage extends StatelessWidget {
   final String challengeId;
@@ -45,13 +49,63 @@ class ChallengeTrackerPage extends StatelessWidget {
 
           final proofs = snapshot.data!;
 
+
+
           return ListView.builder(
             itemCount: proofs.length,
             itemBuilder: (context, index) {
               final dayProof = proofs[index];
-              return ListTile(
-                title: Text('Day ${index+1}: ${dayProof['proof']}'),
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                child: Card(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  elevation: 4,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.blueAccent,
+                      child: Text(
+                        '${index + 1}',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    title: GestureDetector(
+                      onTap: () async {
+                        final url = dayProof['proof'];
+                        final uri = Uri.parse(url);
+                        print(url);
+                        print('Scheme: ${uri.scheme}');
+                        print('Host: ${uri.host}');
+                        print('Path: ${uri.path}');
+                        if (await canLaunchUrl(uri)) {
+                          await launchUrl(uri, mode: LaunchMode.externalApplication);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Could not launch URL')),
+                          );
+                        }
+                      },
+                      child: Text(
+                        'View Proof',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    subtitle: Text(
+                      dayProof['proof'],
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: Colors.grey[700]),
+                    ),
+                    trailing: Icon(Icons.open_in_new, color: Colors.blue),
+                  ),
+                ),
               );
+
             },
           );
         },

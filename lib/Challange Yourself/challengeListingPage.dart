@@ -19,9 +19,10 @@ class _MyHomePageState extends State<ChallengeList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('Your Challenges'),
-        automaticallyImplyLeading: false,
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text('Your Challenges', style: TextStyle(color: Colors.white),),
+        backgroundColor: Colors.deepPurple,
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -59,27 +60,41 @@ class _MyHomePageState extends State<ChallengeList> {
                     children: documents.map((doc) {
                       String name = doc['name'];
 
-                      return ListTile(
-                        title: Text(name),
-                        trailing: Icon(Icons.arrow_forward),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ChallengeProofPage(
-                                id: doc.id,
-                                name: name,
-                                userId: widget.userId,
-                                // You can pass more fields like duration and motive
-                                // duration: doc['duration'],
-                                // motive: doc['motive'],
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                        child: Card(
+                          elevation: 4,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                            leading: Icon(Icons.folder_open, color: Colors.deepPurple),
+                            title: Text(
+                              name,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
                               ),
                             ),
-                          );
-                        },
+                            trailing: Icon(Icons.arrow_forward_ios, color: Colors.grey),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChallengeProofPage(
+                                    id: doc.id,
+                                    name: name,
+                                    userId: widget.userId,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                       );
                     }).toList(),
                   );
+
                 },
               ),
 

@@ -24,6 +24,12 @@ dependencies:
   flutter_dotenv: ^5.1.0
   path_provider: ^2.1.5
   file_picker:
+  flutter_riverpod:
+  uuid:
+  url_launcher:
+  webview_flutter:
+  webview_flutter_android:
+  intl:
 
 
 

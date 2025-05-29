@@ -79,58 +79,107 @@ class _CreateChallengeScreenState extends State<CreateChallengePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Create Challenge'),
+        centerTitle: true,
+        backgroundColor: Colors.deepPurple,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: 'Name'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a name';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _durationController,
-                decoration: InputDecoration(labelText: 'Duration'),
-                keyboardType: TextInputType.number, // Ensures that the input is numeric
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a duration';
-                  }
-                  // Check if the value can be parsed as an integer
-                  if (int.tryParse(value) == null) {
-                    return 'Please enter a valid number';  // Error message if it's not a valid integer
-                  }
-                  return null;
-                },
-              ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Card(
+            elevation: 6,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Enter Challenge Details',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.deepPurple,
+                      ),
+                    ),
+                    SizedBox(height: 20),
 
-              TextFormField(
-                controller: _motiveController,
-                decoration: InputDecoration(labelText: 'Motive'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a motive';
-                  }
-                  return null;
-                },
+                    TextFormField(
+                      controller: _nameController,
+                      decoration: InputDecoration(
+                        labelText: 'Name',
+                        prefixIcon: Icon(Icons.title),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a name';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 16),
+
+                    TextFormField(
+                      controller: _durationController,
+                      decoration: InputDecoration(
+                        labelText: 'Duration (in days)',
+                        prefixIcon: Icon(Icons.timer),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a duration';
+                        }
+                        if (int.tryParse(value) == null) {
+                          return 'Please enter a valid number';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 16),
+
+                    TextFormField(
+                      controller: _motiveController,
+                      decoration: InputDecoration(
+                        labelText: 'Motive',
+                        prefixIcon: Icon(Icons.lightbulb_outline),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a motive';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 30),
+
+                    Center(
+                      child: ElevatedButton.icon(
+                        onPressed: _submitData,
+                        icon: Icon(Icons.check_circle_outline, color: Colors.white,),
+                        label: Text('Submit', style: TextStyle(color: Colors.white),),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.deepPurple,
+                          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submitData,
-                child: Text('Submit'),
-              ),
-            ],
+            ),
           ),
         ),
       ),
     );
+
   }
 }

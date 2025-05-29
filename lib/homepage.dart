@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'Challange Yourself/CreateChallangePage.dart';
 import 'Challange Yourself/challengeListingPage.dart';
 import 'Daily Challenges/ToDOPage.dart';
+import 'Progress Package/CertificatePage.dart';
 import 'Shared_Preference.dart';
+import 'Targeted TODOs/TargetedTodoScreen.dart';
 import 'auth/AuthService.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -95,10 +97,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
               GestureDetector(
                 onTap: (){
-                  // Navigator.pushReplacement(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => ChallengeList(userId: widget.userId,)),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => TodoScreen(userId: widget.userId,)),
+                  );
                 },
                 child: Container(
                   alignment: Alignment.center,
@@ -108,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: Text(
-                    "Set ToDo's with deadlines",
+                    "Set Your Goals",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                   ),
                 ),
@@ -118,10 +120,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
               GestureDetector(
                 onTap: (){
-                  // Navigator.pushReplacement(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => ChallengeList(userId: widget.userId,)),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CertificatePage(),
+                  ));
                 },
                 child: Container(
                   alignment: Alignment.center,
@@ -145,11 +147,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context)=> CreateChallengePage(userId: widget.userId,)));
-          },
-          child: Icon(Icons.add)
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //     onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context)=> CreateChallengePage(userId: widget.userId,)));
+      //     },
+      //     child: Icon(Icons.add)
+      // ),
     );
   }
 }
